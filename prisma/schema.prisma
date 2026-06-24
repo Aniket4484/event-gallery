@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  events    Event[]
+}
+
+model Event {
+  id                 String     @id @default(cuid())
+  name               String
+  coupleNames        String
+  date               DateTime
+  venue              String?
+  description        String?
+  code               String     @unique
+  coverImage         String?
+  coverImagePublicId String?
+  downloadControl    String     @default("VIEW_ONLY")
+  watermarkEnabled   Boolean    @default(false)
+  watermarkText      String?
+  guestUploadEnabled Boolean    @default(false)
+  isActive           Boolean    @default(true)
+  primaryColor       String     @default("#B76E79")
+  adminId            String
+  admin              Admin      @relation(fields: [adminId], references: [id])
+  photos             Photo[]
+  analytics          Analytics?
+  downloadRequests   DownloadRequest[]
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+
+  @@index([code])
+  @@index([adminId])
+}
+
+model Photo {
+  id             String   @id @default(cuid())
+  url            String
+  thumbnailUrl   String?
+  publicId       String
+  filename       String
+  size           Int
+  width          Int?
+  height         Int?
+  category       String   @default("WEDDING")
+  caption        String?
+  likes          Int      @default(0)
+  isApproved     Boolean  @default(true)
+  isGuestUpload  Boolean  @default(false)
+  sortOrder      Int      @default(0)
+  eventId          String
+  event            Event             @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  downloadRequests DownloadRequest[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([eventId])
+  @@index([category])
+}
+
+model Analytics {
+  id             String   @id @default(cuid())
+  eventId        String   @unique
+  event          Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  totalViews     Int      @default(0)
+  totalDownloads Int      @default(0)
+  guestCount     Int      @default(0)
+  dailyViews     String   @default("{}")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model DownloadRequest {
+  id         String   @id @default(cuid())
+  photoId    String
+  photo      Photo    @relation(fields: [photoId], references: [id], onDelete: Cascade)
+  eventId    String
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  guestName  String
+  guestEmail String?
+  guestPhone String?
+  message    String?
+  status     String   @default("PENDING")
+  token      String?  @unique
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([eventId])
+  @@index([photoId])
+  @@index([status])
+}
