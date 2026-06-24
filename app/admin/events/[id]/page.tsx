@@ -16,7 +16,7 @@ import { UploadZone } from "@/components/admin/UploadZone";
 import { AnalyticsDashboard } from "@/components/admin/AnalyticsDashboard";
 import { QRCodeModal } from "@/components/admin/QRCodeModal";
 import { CategoryFilter } from "@/components/gallery/CategoryFilter";
-import { Event, Photo } from "@/types";
+import { Event, Photo, DownloadControl } from "@/types";
 import { CATEGORIES, formatDate, formatBytes } from "@/lib/utils";
 import type { CategoryValue } from "@/lib/utils";
 import axios from "axios";
@@ -326,7 +326,7 @@ function EventSettingsForm({ event, onSave }: { event: Event; onSave: () => void
         {DL_OPTIONS.map((opt) => (
           <label key={opt.value} className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${form.downloadControl === opt.value ? "border-maroon-600 bg-maroon-50 dark:bg-maroon-900/50" : "border-gold-100 dark:border-maroon-800 hover:border-gold-300"}`}>
             <input type="radio" name="dl" value={opt.value} checked={form.downloadControl === opt.value}
-              onChange={(e) => setForm((p) => ({ ...p, downloadControl: e.target.value }))} className="mt-0.5 accent-maroon-700" />
+              onChange={() => setForm((p) => ({ ...p, downloadControl: opt.value as DownloadControl }))} className="mt-0.5 accent-maroon-700" />
             <div>
               <div className="font-medium text-sm text-maroon-800 dark:text-gold-300">{opt.emoji} {opt.label}</div>
               <div className="text-xs text-maroon-500">{opt.desc}</div>

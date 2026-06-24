@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { uploadToCloudinary, getThumbnailUrl } from "@/lib/cloudinary";
-import { Category } from "@prisma/client";
+import type { Category } from "@/types";
 
 const MAX_FILE_SIZE = 20 * 1024 * 1024; // 20MB
 

@@ -70,7 +70,7 @@ export function Slideshow({ photos, coupleName, onExit }: SlideshowProps) {
   return (
     <div className="fixed inset-0 z-50 bg-black overflow-hidden">
       {/* Photo */}
-      <AnimatePresence mode="crossfade">
+      <AnimatePresence mode="sync">
         <motion.div
           key={photo.id}
           initial={{ opacity: 0, scale: 1.05 }}
